@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 2: Hotel Room Booking Website</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, textarea, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 2: Hotel Room Booking Website</h1>
+  <hr>
+
+  <!-- ================= USER PORTAL ================= -->
+  <h2>--- User / Guest Section ---</h2>
+
+  <div class="box">
+    <h3>1. Register & View/Modify Profile</h3>
+    Name: <input type="text" id="uName" value="John Doe">
+    Email: <input type="email" id="uEmail" value="john@gmail.com">
+    Phone: <input type="text" id="uPhone" value="9876543210">
+    <button onclick="alert('Profile Updated Successfully!')">Save Profile</button>
+  </div>
+
+  <div class="box">
+    <h3>2. Check Room Availability & Book Room</h3>
+    Room Type:
+    <select id="selRoom">
+      <option value="Single Room">1. Single Room (Rs. 1500)</option>
+      <option value="Double Room">2. Double Room (Rs. 2500)</option>
+      <option value="Deluxe Room">3. Deluxe Room (Rs. 4000)</option>
+      <option value="Suite Room">4. Suite Room (Rs. 6000)</option>
+    </select>
+    Arrival Date: <input type="date" id="bookDate" value="2026-10-25">
+    Guests: <input type="number" id="bookGuests" value="2" min="1" max="4">
+    <button onclick="checkAvail()">Check Availability</button>
+    <span id="availResult" style="color: green; font-weight: bold;"></span>
+    <br><br>
+    <button onclick="bookRoom()">Book Room & Complete Payment</button>
+  </div>
+
+  <div class="box">
+    <h3>3. Booking History (Change / Cancel 3 Days Before Arrival)</h3>
+    <p><i>Rule: Cancellation and Date Change are only allowed at least 3 days before arrival.</i></p>
+    <table id="historyTable">
+      <tr><th>Booking ID</th><th>Room Type</th><th>Arrival Date</th><th>Guests</th><th>Status</th><th>Action</th></tr>
+      <tr>
+        <td>BK101</td>
+        <td>Deluxe Room</td>
+        <td>2026-10-25</td>
+        <td>2</td>
+        <td>Confirmed</td>
+        <td>
+          <button onclick="changeBooking('2026-10-25', this)">Change Date</button>
+          <button onclick="cancelBooking('2026-10-25', this)">Cancel</button>
+        </td>
+      </tr>
+      <tr>
+        <td>BK102</td>
+        <td>Single Room</td>
+        <td>2026-10-15</td>
+        <td>1</td>
+        <td>Confirmed</td>
+        <td>
+          <button onclick="changeBooking('2026-10-15', this)">Change Date</button>
+          <button onclick="cancelBooking('2026-10-15', this)">Cancel</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>4. Customer Reviews & Ratings</h3>
+    Rating:
+    <select id="userRate">
+      <option>5 Stars</option>
+      <option>4 Stars</option>
+      <option>3 Stars</option>
+    </select>
+    Review: <input type="text" id="userRev" placeholder="Great stay...">
+    <button onclick="addReview()">Post Review</button>
+    <p id="revList">★ 5 Stars: "Amazing hotel and clean rooms!"</p>
+  </div>
+
+  <div class="box">
+    <h3>5. Static Pages Information</h3>
+    <p><b>Room Introduction:</b> <span id="pRoom">We offer 4 types of rooms: Single, Double, Deluxe, and Suite rooms with AC and WiFi.</span></p>
+    <p><b>About Us:</b> <span id="pAbout">Grand Hotel offers premium luxury hospitality and 24/7 service.</span></p>
+    <p><b>Contact Us:</b> <span id="pContact">Phone: 9876543210 | Email: hotel@gmail.com | Beach Road, Chennai.</span></p>
+    <p><b>Customer Service Q&A:</b> <span id="pQA">Q: Check-in time? A: 12:00 Noon. Q: Free Wi-Fi? A: Yes, in all rooms.</span></p>
+    <p><b>Local Travel & Shipping:</b> <span id="pTravel">Airport pickup is available. Local taxi tours arranged at reception desk.</span></p>
+    <p><b>Privacy Policy:</b> <span id="pPrivacy">Your personal data and payment info are fully encrypted and secure.</span></p>
+  </div>
+
+  <!-- ================= ADMINISTRATOR PORTAL ================= -->
+  <h2>--- Administrator Section ---</h2>
+
+  <div class="box">
+    <h3>1. Administrator Login</h3>
+    Admin User: <input type="text" value="admin">
+    Password: <input type="password" value="admin123">
+    <button onclick="alert('Admin Login Successful!')">Login</button>
+  </div>
+
+  <div class="box">
+    <h3>2. Change Quantity and Price of All 4 Room Types</h3>
+    <table>
+      <tr><th>Room Type</th><th>Available Quantity</th><th>Price Per Night (Rs.)</th></tr>
+      <tr><td>1. Single Room</td><td><input type="number" value="10"></td><td><input type="number" value="1500"></td></tr>
+      <tr><td>2. Double Room</td><td><input type="number" value="8"></td><td><input type="number" value="2500"></td></tr>
+      <tr><td>3. Deluxe Room</td><td><input type="number" value="5"></td><td><input type="number" value="4000"></td></tr>
+      <tr><td>4. Suite Room</td><td><input type="number" value="3"></td><td><input type="number" value="6000"></td></tr>
+    </table>
+    <button onclick="alert('Room Quantities & Prices Updated Successfully!')">Save Room Changes</button>
+  </div>
+
+  <div class="box">
+    <h3>3. Change / Cancel Any Specific Booking</h3>
+    <table>
+      <tr><th>Booking ID</th><th>Guest</th><th>Room</th><th>Date</th><th>Admin Action</th></tr>
+      <tr>
+        <td>BK101</td><td>John Doe</td><td>Deluxe Room</td><td>2026-10-25</td>
+        <td>
+          <button onclick="let nr = prompt('Enter new room:'); if(nr) alert('Updated to ' + nr);">Change</button>
+          <button onclick="this.parentElement.parentElement.remove(); alert('Booking Cancelled by Admin!');">Cancel</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>4. Modify Details of Static Pages</h3>
+    Room Info: <input type="text" id="eRoom" value="Single, Double, Deluxe, and Suite rooms." style="width:70%"><br>
+    About Us: <input type="text" id="eAbout" value="Grand Hotel offers luxury hospitality." style="width:70%"><br>
+    Contact Us: <input type="text" id="eContact" value="Phone: 9876543210 | Email: hotel@gmail.com" style="width:70%"><br>
+    Q&A Details: <input type="text" id="eQA" value="Q: Check-in time? A: 12:00 Noon." style="width:70%"><br>
+    Travel Guide: <input type="text" id="eTravel" value="Airport pickup available. Local cab arranged." style="width:70%"><br>
+    Privacy Policy: <input type="text" id="ePrivacy" value="Customer details kept confidential." style="width:70%"><br>
+    <button onclick="updateStatic()">Save Static Pages</button>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    const TODAY = new Date("2026-10-14");
+
+    function checkAvail() {
+      let r = document.getElementById('selRoom').value;
+      document.getElementById('availResult').innerText = "✓ " + r + " is Available!";
+    }
+
+    function bookRoom() {
+      let r = document.getElementById('selRoom').value;
+      let d = document.getElementById('bookDate').value;
+      let g = document.getElementById('bookGuests').value;
+      let id = "BK" + Math.floor(100 + Math.random() * 900);
+
+      let row = document.getElementById('historyTable').insertRow();
+      row.innerHTML = `<td>${id}</td><td>${r}</td><td>${d}</td><td>${g}</td><td>Confirmed</td>
+        <td>
+          <button onclick="changeBooking('${d}', this)">Change Date</button>
+          <button onclick="cancelBooking('${d}', this)">Cancel</button>
+        </td>`;
+      alert(`Booking ${id} Confirmed! Payment Received via Gateway.`);
+    }
+
+    // 3 Days Check Function
+    function checkThreeDays(dateStr) {
+      let diff = Math.ceil((new Date(dateStr) - TODAY) / (1000 * 60 * 60 * 24));
+      return diff >= 3;
+    }
+
+    function changeBooking(dateStr, btn) {
+      if (!checkThreeDays(dateStr)) {
+        return alert("Cannot Change! Must be at least 3 days before arrival date.");
+      }
+      let nd = prompt("Enter new arrival date (YYYY-MM-DD):", "2026-10-29");
+      if (nd) {
+        btn.parentElement.parentElement.cells[2].innerText = nd;
+        alert("Booking Date Changed to " + nd);
+      }
+    }
+
+    function cancelBooking(dateStr, btn) {
+      if (!checkThreeDays(dateStr)) {
+        return alert("Cannot Cancel! Must be at least 3 days before arrival date.");
+      }
+      if (confirm("Cancel this booking?")) {
+        btn.parentElement.parentElement.cells[4].innerText = "Cancelled";
+        btn.parentElement.parentElement.cells[4].style.color = "red";
+        alert("Booking Cancelled Successfully! Refund initiated.");
+      }
+    }
+
+    function addReview() {
+      let r = document.getElementById('userRate').value;
+      let txt = document.getElementById('userRev').value;
+      document.getElementById('revList').innerHTML += `<br>★ ${r}: "${txt}"`;
+      alert("Review posted!");
+    }
+
+    function updateStatic() {
+      document.getElementById('pRoom').innerText = document.getElementById('eRoom').value;
+      document.getElementById('pAbout').innerText = document.getElementById('eAbout').value;
+      document.getElementById('pContact').innerText = document.getElementById('eContact').value;
+      document.getElementById('pQA').innerText = document.getElementById('eQA').value;
+      document.getElementById('pTravel').innerText = document.getElementById('eTravel').value;
+      document.getElementById('pPrivacy').innerText = document.getElementById('ePrivacy').value;
+      alert("Static Pages updated on User Portal!");
+    }
+  </script>
+
+</body>
+</html>

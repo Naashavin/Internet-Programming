@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 3: Bus Ticket Booking System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, textarea, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+    .seat { display: inline-block; width: 35px; height: 35px; line-height: 35px; text-align: center; border: 1px solid #333; margin: 3px; cursor: pointer; }
+    .selected { background-color: orange; color: white; }
+    .booked { background-color: #bbb; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 3: Online Bus Ticket Booking System</h1>
+  <hr>
+
+  <!-- ================= PASSENGER PORTAL ================= -->
+  <h2>--- Passenger / User Section ---</h2>
+
+  <div class="box">
+    <h3>1. Login, Registration & Password Utilities</h3>
+    Username: <input type="text" value="user1">
+    Password: <input type="password" value="123">
+    <button onclick="alert('Logged in!')">Login</button>
+    <button onclick="alert('Registered successfully!')">Register</button>
+    <button onclick="alert('Password reset link sent to your email!')">Forgot Password</button>
+    <button onclick="let p = prompt('Enter new password:'); if(p) alert('Password Changed!');">Change Password</button>
+  </div>
+
+  <div class="box">
+    <h3>2. Search Buses & Select Seats</h3>
+    From:
+    <select id="bFrom">
+      <option>Chennai</option>
+      <option>Bangalore</option>
+      <option>Coimbatore</option>
+    </select>
+    To:
+    <select id="bTo">
+      <option>Bangalore</option>
+      <option>Chennai</option>
+      <option>Coimbatore</option>
+    </select>
+    Date: <input type="date" value="2026-10-20">
+    Time: <input type="time" value="21:00">
+    <button onclick="alert('Searching buses for ' + document.getElementById('bFrom').value + ' to ' + document.getElementById('bTo').value)">Search Buses</button>
+
+    <h4>Available Buses:</h4>
+    <table>
+      <tr><th>Bus Name</th><th>Category</th><th>Time</th><th>Fare</th><th>Available Seats</th></tr>
+      <tr><td>Express Lines</td><td>Volvo AC Coach</td><td>21:00</td><td>Rs. 800</td><td>15 Seats Available</td></tr>
+      <tr><td>Royal Sleeper</td><td>Sleeper Coach</td><td>22:30</td><td>Rs. 1000</td><td>10 Seats Available</td></tr>
+    </table>
+
+    <h4>Select Seat (Click to Select):</h4>
+    <div>
+      <div class="seat booked">S1</div>
+      <div class="seat booked">S2</div>
+      <div class="seat" onclick="pickSeat(this, 'S3')">S3</div>
+      <div class="seat" onclick="pickSeat(this, 'S4')">S4</div>
+      <div class="seat" onclick="pickSeat(this, 'S5')">S5</div>
+      <div class="seat" onclick="pickSeat(this, 'S6')">S6</div>
+    </div>
+    <p>Selected Seats: <b id="selSeats">None</b> | Total Fare: <b id="totalFare" style="color:green;">Rs. 0</b></p>
+
+    Passenger Name: <input type="text" id="pName" value="Rahul">
+    Email: <input type="email" id="pEmail" value="rahul@gmail.com">
+    <button onclick="bookTicket()">Make Payment & Book Ticket</button>
+  </div>
+
+  <div class="box">
+    <h3>3. Booking History & Cancel Ticket</h3>
+    <table id="historyTable">
+      <tr><th>PNR</th><th>Passenger</th><th>Bus</th><th>Seats</th><th>Fare</th><th>Status</th><th>Action</th></tr>
+      <tr>
+        <td>PNR101</td><td>Rahul</td><td>Express Lines (Volvo)</td><td>S3</td><td>Rs. 800</td><td>Confirmed</td>
+        <td><button onclick="cancelTicket(this)">Cancel Ticket</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>4. Post Comments on a Bus</h3>
+    Bus:
+    <select id="cBus">
+      <option>Express Lines (Volvo)</option>
+      <option>Royal Sleeper</option>
+    </select>
+    Comment: <input type="text" id="cMsg" placeholder="Bus was on time..." style="width: 50%;">
+    <button onclick="addComment()">Post Comment</button>
+    <p id="cList">💬 <i>"Express Lines Volvo was very comfortable and punctual!"</i></p>
+  </div>
+
+  <div class="box">
+    <h3>5. News & Announcements</h3>
+    <p id="pNews">📢 <b>Diwali Special:</b> 20 extra Volvo buses added on Chennai - Bangalore highway!</p>
+  </div>
+
+  <!-- ================= ADMIN SECTION ================= -->
+  <h2>--- Administrator Section ---</h2>
+
+  <div class="box">
+    <h3>1. Admin Login</h3>
+    Admin User: <input type="text" value="admin">
+    Password: <input type="password" value="admin123">
+    <button onclick="alert('Admin Login Successful!')">Login</button>
+  </div>
+
+  <div class="box">
+    <h3>2. Bus Categories (Volvo, Sleeper coach, etc.)</h3>
+    New Category: <input type="text" id="newCat" placeholder="e.g. Electric AC Bus">
+    <button onclick="addCategory()">Add Category</button>
+    <ul id="catList">
+      <li>Volvo Multi-Axle</li>
+      <li>Sleeper Coach</li>
+      <li>Semi-Sleeper Coach</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>3. Add / Update Bus Information</h3>
+    Bus Name: <input type="text" id="aBusName" placeholder="Royal Travels">
+    Type: <input type="text" id="aBusType" placeholder="Sleeper Coach">
+    Route: <input type="text" id="aBusRoute" placeholder="Chennai to Madurai">
+    Seats: <input type="number" id="aBusSeats" value="20" style="width: 60px;">
+    Fare: <input type="number" id="aBusFare" value="750" style="width: 70px;">
+    <button onclick="addBusAdmin()">Add / Update Bus</button>
+
+    <h4>Fleet Details:</h4>
+    <table id="adminBusTable">
+      <tr><th>Bus Name</th><th>Category</th><th>Route</th><th>Seats</th><th>Fare</th><th>Action</th></tr>
+      <tr><td>Express Lines</td><td>Volvo AC Coach</td><td>Chennai to Bangalore</td><td>20</td><td>Rs. 800</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>4. Maintain Registered Users</h3>
+    <table>
+      <tr><th>User ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr>
+      <tr><td>U1</td><td>Rahul</td><td>rahul@gmail.com</td><td>Active</td><td><button onclick="this.parentElement.parentElement.cells[3].innerText = 'Blocked'">Block User</button></td></tr>
+      <tr><td>U2</td><td>Priya</td><td>priya@gmail.com</td><td>Active</td><td><button onclick="this.parentElement.parentElement.cells[3].innerText = 'Blocked'">Block User</button></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>5. Manage News</h3>
+    Update News: <input type="text" id="inNews" value="📢 Special holiday buses running on all major routes." style="width: 60%;">
+    <button onclick="document.getElementById('pNews').innerHTML = document.getElementById('inNews').value; alert('News Published!');">Publish News</button>
+  </div>
+
+  <div class="box">
+    <h3>6. Report Generation</h3>
+    <button onclick="document.getElementById('repBox').style.display = 'block'; alert('Report Generated!');">Generate Report</button>
+    <div id="repBox" style="display:none; margin-top:10px; background:#f0f0f0; padding:10px;">
+      <h4>Administrative Report Summary</h4>
+      <p>• Total Buses: <b>5</b> | Total Bookings: <b>12</b> | Total Revenue: <b>Rs. 9,600</b></p>
+      <button onclick="window.print()">Print Report</button>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let chosenSeats = [];
+    let seatPrice = 800;
+
+    function pickSeat(el, sName) {
+      if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        chosenSeats = chosenSeats.filter(s => s !== sName);
+      } else {
+        el.classList.add('selected');
+        chosenSeats.push(sName);
+      }
+      document.getElementById('selSeats').innerText = chosenSeats.length ? chosenSeats.join(', ') : 'None';
+      document.getElementById('totalFare').innerText = "Rs. " + (chosenSeats.length * seatPrice);
+    }
+
+    function bookTicket() {
+      if (!chosenSeats.length) return alert('Please select at least 1 seat!');
+      let name = document.getElementById('pName').value;
+      let pnr = "PNR" + Math.floor(100 + Math.random() * 900);
+      let fare = "Rs. " + (chosenSeats.length * seatPrice);
+
+      let row = document.getElementById('historyTable').insertRow();
+      row.innerHTML = `<td>${pnr}</td><td>${name}</td><td>Express Lines (Volvo)</td><td>${chosenSeats.join(', ')}</td><td>${fare}</td><td>Confirmed</td>
+        <td><button onclick="cancelTicket(this)">Cancel Ticket</button></td>`;
+      alert(`Booking ${pnr} Confirmed! Payment Received.`);
+    }
+
+    function cancelTicket(btn) {
+      if (confirm('Cancel this bus ticket?')) {
+        let row = btn.parentElement.parentElement;
+        row.cells[5].innerText = "Cancelled";
+        row.cells[5].style.color = "red";
+        alert('Ticket Cancelled! Refund initiated.');
+      }
+    }
+
+    function addComment() {
+      let b = document.getElementById('cBus').value;
+      let m = document.getElementById('cMsg').value;
+      if (!m) return alert('Enter comment!');
+      document.getElementById('cList').innerHTML += `<br>💬 <b>${b}:</b> "${m}"`;
+      alert('Comment posted!');
+    }
+
+    function addCategory() {
+      let c = document.getElementById('newCat').value;
+      if (!c) return;
+      let li = document.createElement('li');
+      li.innerText = c;
+      document.getElementById('catList').appendChild(li);
+      alert('Category added!');
+      document.getElementById('newCat').value = '';
+    }
+
+    function addBusAdmin() {
+      let n = document.getElementById('aBusName').value;
+      let t = document.getElementById('aBusType').value;
+      let r = document.getElementById('aBusRoute').value;
+      let s = document.getElementById('aBusSeats').value;
+      let f = document.getElementById('aBusFare').value;
+      if (!n) return alert('Enter bus name');
+
+      let row = document.getElementById('adminBusTable').insertRow();
+      row.innerHTML = `<td>${n}</td><td>${t}</td><td>${r}</td><td>${s}</td><td>Rs. ${f}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+      alert('Bus added to fleet!');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 1: Library Management System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 1: Local Library Website</h1>
+  <hr>
+
+  <!-- ================= USER / STUDENT SECTION ================= -->
+  <h2>--- User / Student Section ---</h2>
+
+  <div class="box">
+    <h3>1. Login & Register</h3>
+    <form onsubmit="event.preventDefault(); alert('Logged in successfully!');">
+      Username: <input type="text" value="student1" required>
+      Password: <input type="password" value="123" required>
+      <button type="submit">Login</button>
+      <button type="button" onclick="alert('Registered successfully!')">Register</button>
+    </form>
+  </div>
+
+  <div class="box">
+    <h3>2. My Profile</h3>
+    Name: <input type="text" value="Alex">
+    Reg No: <input type="text" value="CS101" readonly>
+    Dept: <input type="text" value="CSE">
+    <button onclick="alert('Profile Updated!')">Save Profile</button>
+  </div>
+
+  <div class="box">
+    <h3>3. Search Book Catalog</h3>
+    Search: <input type="text" id="findBook" onkeyup="filterBooks()" placeholder="Search title...">
+    <table id="catalogTable">
+      <tr><th>Book ID</th><th>Title</th><th>Author</th><th>Status</th></tr>
+      <tr><td>1</td><td>C Programming</td><td>Dennis Ritchie</td><td>Available</td></tr>
+      <tr><td>2</td><td>Database Systems</td><td>Korth</td><td>Available</td></tr>
+      <tr><td>3</td><td>Computer Networks</td><td>Tanenbaum</td><td>Available</td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>4. My Borrow History & Check Fine</h3>
+    <table>
+      <tr><th>Book Title</th><th>Issue Date</th><th>Exp Date</th><th>Status</th><th>Fine</th></tr>
+      <tr><td>Database Systems</td><td>01-Oct-2026</td><td>10-Oct-2026</td><td style="color:red">Overdue (4 days)</td><td>Rs. 20</td></tr>
+      <tr><td>C Programming</td><td>12-Oct-2026</td><td>26-Oct-2026</td><td style="color:green">Issued</td><td>Rs. 0</td></tr>
+    </table>
+    <p>Total Outstanding Fine: <b>Rs. 20</b> (at Rs. 5/day)</p>
+    <button onclick="alert('Fine of Rs. 20 Paid Successfully!')">Pay Fine</button>
+  </div>
+
+  <div class="box">
+    <h3>5. Search & Download Study Material (Year / Semester wise)</h3>
+    Year:
+    <select id="selYr">
+      <option value="3">3rd Year</option>
+      <option value="2">2nd Year</option>
+      <option value="1">1st Year</option>
+    </select>
+    Semester:
+    <select id="selSem">
+      <option value="5">Sem 5</option>
+      <option value="6">Sem 6</option>
+    </select>
+    <button onclick="alert('Displaying materials for Year ' + document.getElementById('selYr').value + ' Semester ' + document.getElementById('selSem').value)">Search Material</button>
+    <br><br>
+    <table>
+      <tr><th>Subject</th><th>File</th><th>Action</th></tr>
+      <tr><td>Internet Programming</td><td>IP_Notes.pdf</td><td><button onclick="alert('Downloading IP_Notes.pdf...')">Download</button></td></tr>
+      <tr><td>Computer Networks</td><td>CN_Unit1.pdf</td><td><button onclick="alert('Downloading CN_Unit1.pdf...')">Download</button></td></tr>
+    </table>
+  </div>
+
+  <!-- ================= LIBRARIAN ADMIN SECTION ================= -->
+  <h2>--- Librarian Admin Section ---</h2>
+
+  <div class="box">
+    <h3>1. Admin Login</h3>
+    <form onsubmit="event.preventDefault(); alert('Admin Logged in!');">
+      Admin User: <input type="text" value="admin">
+      Password: <input type="password" value="admin123">
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div class="box">
+    <h3>2. Add, Update & Delete Book</h3>
+    Book ID: <input type="text" id="bId" placeholder="e.g. 4">
+    Title: <input type="text" id="bTitle" placeholder="Book Name">
+    Author: <input type="text" id="bAuth" placeholder="Author">
+    <button onclick="addBook()">Add Book</button>
+
+    <h4>Inventory List:</h4>
+    <table id="adminTable">
+      <tr><th>Book ID</th><th>Title</th><th>Author</th><th>Action</th></tr>
+      <tr><td>1</td><td>C Programming</td><td>Dennis Ritchie</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td></tr>
+      <tr><td>2</td><td>Database Systems</td><td>Korth</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>3. Issue Book for Student</h3>
+    Student Reg No: <input type="text" id="issueReg" placeholder="CS101">
+    Book Name: <input type="text" id="issueBook" placeholder="Computer Networks">
+    Due Date: <input type="date" value="2026-10-28">
+    <button onclick="alert('Book issued to student ' + document.getElementById('issueReg').value)">Issue Book</button>
+  </div>
+
+  <div class="box">
+    <h3>4. Return Book Status & Make Fine</h3>
+    Days Overdue: <input type="number" id="daysLate" value="4">
+    <button onclick="calcFine()">Calculate Fine (Rs. 5/day)</button>
+    Fine Amount: <b id="fineVal" style="color:red">Rs. 20</b>
+    <button onclick="alert('Book Return Processed and fine recorded!')">Mark Returned</button>
+  </div>
+
+  <div class="box">
+    <h3>5. Update & View Study Material</h3>
+    Subject: <input type="text" id="matSub" placeholder="Subject Name">
+    Year: <input type="text" id="matYr" placeholder="3" style="width:40px;">
+    Sem: <input type="text" id="matSem" placeholder="5" style="width:40px;">
+    File: <input type="text" id="matFile" placeholder="Unit2.pdf">
+    <button onclick="addMaterial()">Upload Material</button>
+
+    <h4>View Materials:</h4>
+    <table id="matViewTable">
+      <tr><th>Subject</th><th>Year</th><th>Sem</th><th>File</th><th>Action</th></tr>
+      <tr><td>Internet Programming</td><td>3</td><td>5</td><td>IP_Notes.pdf</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td></tr>
+    </table>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function filterBooks() {
+      let q = document.getElementById('findBook').value.toLowerCase();
+      let rows = document.querySelectorAll('#catalogTable tr:not(:first-child)');
+      rows.forEach(r => {
+        r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    function addBook() {
+      let id = document.getElementById('bId').value;
+      let title = document.getElementById('bTitle').value;
+      let auth = document.getElementById('bAuth').value;
+      if (!title) return alert('Enter book title');
+
+      let row = document.getElementById('adminTable').insertRow();
+      row.innerHTML = `<td>${id}</td><td>${title}</td><td>${auth}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+      alert('Book added to inventory!');
+    }
+
+    function calcFine() {
+      let d = document.getElementById('daysLate').value;
+      document.getElementById('fineVal').innerText = "Rs. " + (d * 5);
+    }
+
+    function addMaterial() {
+      let sub = document.getElementById('matSub').value;
+      let yr = document.getElementById('matYr').value;
+      let sem = document.getElementById('matSem').value;
+      let file = document.getElementById('matFile').value;
+
+      let row = document.getElementById('matViewTable').insertRow();
+      row.innerHTML = `<td>${sub}</td><td>${yr}</td><td>${sem}</td><td>${file}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+      alert('Material uploaded successfully!');
+    }
+  </script>
+
+</body>
+</html>
