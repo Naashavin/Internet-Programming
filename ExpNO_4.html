@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 4: Online Train Reservation System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, textarea, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 4: Online Train Reservation System</h1>
+  <hr>
+
+  <!-- ================= PASSENGER / USER SECTION ================= -->
+  <h2>--- Passenger / User Section ---</h2>
+
+  <div class="box">
+    <h3>1. Passenger Authentication (Login & Registration)</h3>
+    <form onsubmit="event.preventDefault(); alert('Passenger Logged in Successfully!');">
+      Username / Email: <input type="text" value="passenger1" required>
+      Password: <input type="password" value="pass123" required>
+      <button type="submit">Login</button>
+      <button type="button" onclick="alert('Registration Successful! You can now login.')">Register</button>
+    </form>
+  </div>
+
+  <div class="box">
+    <h3>2. Search Trains & Seat Availability (with Via-Details)</h3>
+    Origin Station:
+    <select id="tOrigin">
+      <option value="Chennai Central (MAS)">Chennai Central (MAS)</option>
+      <option value="Bangalore City (SBC)">Bangalore City (SBC)</option>
+      <option value="New Delhi (NDLS)">New Delhi (NDLS)</option>
+    </select>
+    Destination:
+    <select id="tDest">
+      <option value="Bangalore City (SBC)">Bangalore City (SBC)</option>
+      <option value="Chennai Central (MAS)">Chennai Central (MAS)</option>
+      <option value="Coimbatore (CBE)">Coimbatore (CBE)</option>
+    </select>
+    Date of Journey: <input type="date" id="tDate" value="2026-10-25">
+    Class Type:
+    <select id="tClass">
+      <option value="Sleeper (SL)">Sleeper (SL) - Rs. 350</option>
+      <option value="AC 3 Tier (3A)">AC 3 Tier (3A) - Rs. 950</option>
+      <option value="AC 2 Tier (2A)">AC 2 Tier (2A) - Rs. 1400</option>
+      <option value="First AC (1A)">First AC (1A) - Rs. 2200</option>
+    </select>
+    <button onclick="searchTrains()">Search Trains</button>
+
+    <h4>Available Trains:</h4>
+    <table id="trainTable">
+      <tr><th>Train No</th><th>Train Name</th><th>Route</th><th>Via-Details</th><th>Seat Availability</th><th>Action</th></tr>
+      <tr>
+        <td>12607</td>
+        <td>Lalbagh Express</td>
+        <td>MAS → SBC</td>
+        <td>Arakkonam, Katpadi, Jolarpettai</td>
+        <td><b style="color:green;">AVAILABLE - 42</b></td>
+        <td><button onclick="selectTrain('12607 - Lalbagh Express')">Select Train</button></td>
+      </tr>
+      <tr>
+        <td>12609</td>
+        <td>Bangalore Intercity</td>
+        <td>MAS → SBC</td>
+        <td>Perambur, Tiruvallur, Bangarapet</td>
+        <td><b style="color:orange;">RAC - 12</b></td>
+        <td><button onclick="selectTrain('12609 - Bangalore Intercity')">Select Train</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>3. Passenger Details & Book Ticket (Online / Offline Payment)</h3>
+    Selected Train: <b id="lblTrain">12607 - Lalbagh Express</b><br>
+    Passenger Name: <input type="text" id="pName" value="Karthik">
+    Age: <input type="number" id="pAge" value="24" style="width: 50px;">
+    Gender:
+    <select id="pGender">
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select><br>
+    Payment Mode:
+    <select id="payMode">
+      <option value="Online (UPI / Card / NetBanking)">Online (UPI / Card / NetBanking)</option>
+      <option value="Offline (Railway Counter / Post Payment)">Offline (Railway Counter / Post Payment)</option>
+    </select>
+    <button onclick="bookTrainTicket()">Pay Ticket Fare & Generate PNR</button>
+  </div>
+
+  <div class="box">
+    <h3>4. Check PNR Status</h3>
+    Enter PNR No: <input type="text" id="chkPnr" placeholder="e.g. PNR-1001">
+    <button onclick="checkPnrStatus()">Check Status</button>
+    <p>Current Status: <b id="pnrResult" style="color: blue;">Enter PNR above to check</b></p>
+  </div>
+
+  <div class="box">
+    <h3>5. Cancel Ticket & Refund Rules</h3>
+    <p><i>Refund Rules: Cancellation prior to 48 hours gets 75% refund. Between 48 to 12 hours gets 50% refund.</i></p>
+    Enter PNR No to Cancel: <input type="text" id="cancelPnr" placeholder="e.g. PNR-1001">
+    <button onclick="cancelTrainTicket()">Request Cancel & Calculate Refund</button>
+    <p id="refundMsg" style="color: red; font-weight: bold;"></p>
+  </div>
+
+  <div class="box">
+    <h3>6. My Booking History & Print Ticket</h3>
+    <table id="userBookingHistory">
+      <tr><th>PNR No</th><th>Passenger</th><th>Train</th><th>Class</th><th>Date</th><th>Fare</th><th>Status</th><th>Print</th></tr>
+      <tr>
+        <td>PNR-1001</td>
+        <td>Karthik</td>
+        <td>12607 - Lalbagh Express</td>
+        <td>AC 3 Tier (3A)</td>
+        <td>2026-10-25</td>
+        <td>Rs. 950</td>
+        <td><b style="color:green;">CONFIRMED</b></td>
+        <td><button onclick="window.print()">Print</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ================= ADMINISTRATOR SECTION ================= -->
+  <h2>--- Administrator Section ---</h2>
+
+  <div class="box">
+    <h3>1. Admin Authentication</h3>
+    Admin User: <input type="text" value="admin">
+    Password: <input type="password" value="railadmin">
+    <button onclick="alert('Admin Logged in Successfully!')">Login</button>
+  </div>
+
+  <div class="box">
+    <h3>2. Manage Train Details & Fare Details (Zone, Class, Date Wise)</h3>
+    Train No: <input type="text" id="aTrainNo" placeholder="12675">
+    Train Name: <input type="text" id="aTrainName" placeholder="Kovai Express">
+    Zone:
+    <select id="aZone">
+      <option>Southern Railway (SR)</option>
+      <option>South Western Railway (SWR)</option>
+      <option>Northern Railway (NR)</option>
+    </select>
+    Route: <input type="text" id="aRoute" placeholder="Chennai to Coimbatore">
+    Fare (Rs.): <input type="number" id="aFare" value="650" style="width: 70px;">
+    Total Seats: <input type="number" id="aSeats" value="60" style="width: 60px;">
+    <button onclick="addTrainAdmin()">Add / Update Train</button>
+
+    <h4>Stored Train Schedule & Maintenance:</h4>
+    <table id="adminTrainTable">
+      <tr><th>Train No</th><th>Train Name</th><th>Zone</th><th>Route</th><th>Fare</th><th>Seats</th><th>Action</th></tr>
+      <tr>
+        <td>12607</td><td>Lalbagh Express</td><td>Southern Railway</td><td>MAS → SBC</td><td>Rs. 950</td><td>42</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>3. Admin Bookings & Payment Details Record</h3>
+    <table id="adminPaymentTable">
+      <tr><th>PNR No</th><th>Passenger</th><th>Payment Mode</th><th>Fare Amount</th><th>Status</th><th>Refund Admin Action</th></tr>
+      <tr>
+        <td>PNR-1001</td><td>Karthik</td><td>Online (UPI)</td><td>Rs. 950</td><td>Completed</td>
+        <td><button onclick="alert('Admin approved refundable amount to system!')">Pass Refund</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let pnrStore = {
+      "PNR-1001": { passenger: "Karthik", train: "12607 - Lalbagh Express", status: "CONFIRMED (Coach B2, Seat 18)", fare: 950 }
+    };
+
+    function searchTrains() {
+      let orig = document.getElementById('tOrigin').value;
+      let dest = document.getElementById('tDest').value;
+      if (orig === dest) return alert('Origin and Destination cannot be the same!');
+      alert(`Trains displayed for route: ${orig} to ${dest}`);
+    }
+
+    function selectTrain(name) {
+      document.getElementById('lblTrain').innerText = name;
+      alert(`Selected: ${name}. Fill passenger details below.`);
+    }
+
+    function bookTrainTicket() {
+      let name = document.getElementById('pName').value;
+      let train = document.getElementById('lblTrain').innerText;
+      let cls = document.getElementById('tClass').value;
+      let date = document.getElementById('tDate').value;
+      let mode = document.getElementById('payMode').value;
+      if (!name) return alert('Please enter passenger name');
+
+      let newPnr = "PNR-" + Math.floor(1000 + Math.random() * 9000);
+      let fare = cls.includes("Rs. 950") ? 950 : 350;
+
+      pnrStore[newPnr] = { passenger: name, train: train, status: "CONFIRMED", fare: fare };
+
+      // Add to passenger history
+      let row = document.getElementById('userBookingHistory').insertRow();
+      row.innerHTML = `<td>${newPnr}</td><td>${name}</td><td>${train}</td><td>${cls}</td><td>${date}</td><td>Rs. ${fare}</td><td><b style="color:green;">CONFIRMED</b></td><td><button onclick="window.print()">Print</button></td>`;
+
+      // Add to admin payment ledger
+      let aRow = document.getElementById('adminPaymentTable').insertRow();
+      aRow.innerHTML = `<td>${newPnr}</td><td>${name}</td><td>${mode}</td><td>Rs. ${fare}</td><td>Completed</td><td><button onclick="alert('Refund processed by Admin')">Pass Refund</button></td>`;
+
+      alert(`Payment Successful via ${mode}!\nTicket Generated.\nYour PNR No is: ${newPnr}`);
+    }
+
+    function checkPnrStatus() {
+      let pnr = document.getElementById('chkPnr').value.trim();
+      if (!pnr) return alert('Please enter a PNR number');
+      if (pnrStore[pnr]) {
+        document.getElementById('pnrResult').innerText = `${pnrStore[pnr].passenger} | ${pnrStore[pnr].train} | Status: ${pnrStore[pnr].status}`;
+      } else {
+        document.getElementById('pnrResult').innerText = "PNR Not Found / Invalid PNR";
+      }
+    }
+
+    function cancelTrainTicket() {
+      let pnr = document.getElementById('cancelPnr').value.trim();
+      if (!pnr || !pnrStore[pnr]) return alert('Invalid or Unknown PNR No!');
+
+      let fare = pnrStore[pnr].fare;
+      let refundPercent = 75; // 75% refund rule
+      let refundAmt = (fare * refundPercent) / 100;
+
+      pnrStore[pnr].status = "CANCELLED";
+      document.getElementById('refundMsg').innerText = `Ticket ${pnr} Cancelled! Refundable percentage: ${refundPercent}%. Refund of Rs. ${refundAmt} will be passed by Admin to your account.`;
+      alert(`Cancellation request submitted for ${pnr}.\nRefund Amount: Rs. ${refundAmt}`);
+    }
+
+    function addTrainAdmin() {
+      let no = document.getElementById('aTrainNo').value;
+      let name = document.getElementById('aTrainName').value;
+      let zone = document.getElementById('aZone').value;
+      let route = document.getElementById('aRoute').value;
+      let fare = document.getElementById('aFare').value;
+      let seats = document.getElementById('aSeats').value;
+      if (!no || !name) return alert('Enter train number and name');
+
+      let row = document.getElementById('adminTrainTable').insertRow();
+      row.innerHTML = `<td>${no}</td><td>${name}</td><td>${zone}</td><td>${route}</td><td>Rs. ${fare}</td><td>${seats}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+      alert('Train details added to schedule!');
+    }
+  </script>
+
+</body>
+</html>

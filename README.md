@@ -16,5 +16,13 @@ This repository contains clean, self-contained, university-level solutions for t
 - **Passenger / User Portal**: Bus search by route, date, and time; visual seat selection; passenger details & payment simulation; booking history with cancellation; and bus comments.
 - **Administrator Portal**: Bus categories maintenance (*Volvo, Sleeper coach, etc.*), add/update bus information, user management, travel news updates, and report generation.
 
+### 4. [ExpNO_4.html](ExpNO_4.html) — Online Train Reservation System
+- **Passenger / User Portal**: Passenger authentication, search trains & seat availability with via-details, passenger details form, payment modes (online/offline), PNR status checker, cancellation with refund rules (75% refundable percentage), and printable ticket history.
+- **Administrator Portal**: Admin login, train schedule maintenance (zone, class, and date-wise fares), payment ledger records, and refund processing.
+
+### 5. [ExpNO_5.html](ExpNO_5.html) — Online Flight Reservation System
+- **Passenger / User Portal**: Login, registration & forgot password utilities, search flight page by destination, date & class, seat selection and booking, payment gateway, my e-ticket page with print option, view booking status by reference, ticket cancellation, and customer feedback.
+- **Administrator Portal**: Admin login, flight schedules & seat inventory management, and operational reporting (bookings and revenue analytics).
+
 ---
 *Created for University Internet Programming Lab.*

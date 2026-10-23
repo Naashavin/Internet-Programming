@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 5: Online Flight Reservation System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, textarea, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 5: Online Flight Reservation System</h1>
+  <hr>
+
+  <!-- ================= USER / PASSENGER SECTION ================= -->
+  <h2>--- Passenger / User Section ---</h2>
+
+  <!-- 1. Login, Register & Forgot Password -->
+  <div class="box">
+    <h3>1. Passenger Login, Registration & Forgot Password</h3>
+    <form onsubmit="event.preventDefault(); alert('Passenger Login Successful!');">
+      Email / User ID: <input type="email" value="passenger@gmail.com" required>
+      Password: <input type="password" value="pass123" required>
+      <button type="submit">Login</button>
+      <button type="button" onclick="alert('Registration Successful!')">Register</button>
+      <button type="button" onclick="alert('Password reset instructions sent to your email!')">Forgot Password</button>
+    </form>
+  </div>
+
+  <!-- 2. Search Flight Page -->
+  <div class="box">
+    <h3>2. Search Flight Page</h3>
+    From:
+    <select id="fFrom">
+      <option value="Chennai (MAA)">Chennai (MAA)</option>
+      <option value="Delhi (DEL)">Delhi (DEL)</option>
+      <option value="Mumbai (BOM)">Mumbai (BOM)</option>
+    </select>
+    To:
+    <select id="fTo">
+      <option value="Delhi (DEL)">Delhi (DEL)</option>
+      <option value="Chennai (MAA)">Chennai (MAA)</option>
+      <option value="Dubai (DXB)">Dubai (DXB)</option>
+    </select>
+    Departure Date: <input type="date" id="fDate" value="2026-10-28">
+    Travel Class:
+    <select id="fClass">
+      <option value="Economy">Economy Class</option>
+      <option value="Business">Business Class</option>
+    </select>
+    <button onclick="searchFlights()">Search Flights</button>
+
+    <h4>Available Flights:</h4>
+    <table id="flightTable">
+      <tr><th>Flight No</th><th>Airline</th><th>Route</th><th>Departure</th><th>Fare</th><th>Seats</th><th>Action</th></tr>
+      <tr>
+        <td>AI-542</td><td>Air India</td><td>MAA → DEL</td><td>06:30 AM</td><td>Rs. 4,800</td><td><b style="color:green;">18 Available</b></td>
+        <td><button onclick="selectFlight('AI-542 Air India', 4800)">Select Flight</button></td>
+      </tr>
+      <tr>
+        <td>6E-204</td><td>IndiGo</td><td>MAA → DEL</td><td>11:15 AM</td><td>Rs. 4,200</td><td><b style="color:green;">24 Available</b></td>
+        <td><button onclick="selectFlight('6E-204 IndiGo', 4200)">Select Flight</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3. Book Ticket & Payment Page -->
+  <div class="box">
+    <h3>3. Book Ticket Page & Payment Gateway</h3>
+    Selected Flight: <b id="lblFlight">AI-542 Air India</b> | Fare: <b id="lblFare">Rs. 4,800</b><br>
+    Passenger Full Name: <input type="text" id="paxName" value="Priya Ramesh">
+    Seat Preference:
+    <select id="paxSeat">
+      <option>12A (Window)</option>
+      <option>12B (Middle)</option>
+      <option>12C (Aisle)</option>
+      <option>14A (Window)</option>
+    </select><br>
+    Payment Method:
+    <select id="paxPay">
+      <option>Credit / Debit Card</option>
+      <option>UPI / Net Banking</option>
+    </select>
+    <button onclick="bookFlightTicket()">Make Payment & Confirm e-Ticket</button>
+  </div>
+
+  <!-- 4. My Ticket Page & Print Ticket Page -->
+  <div class="box">
+    <h3>4. My Ticket Page & Print Ticket</h3>
+    <table id="myTicketsTable">
+      <tr><th>Booking Ref / PNR</th><th>Passenger</th><th>Flight</th><th>Seat</th><th>Date</th><th>Fare</th><th>Status</th><th>Print</th></tr>
+      <tr>
+        <td>FL-9021</td><td>Priya Ramesh</td><td>AI-542 Air India</td><td>12A (Window)</td><td>2026-10-28</td><td>Rs. 4,800</td><td><b style="color:green;">CONFIRMED</b></td>
+        <td><button onclick="window.print()">Print Ticket</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 5. View Booking Status Page & Cancel Ticket Page -->
+  <div class="box">
+    <h3>5. View Booking Status & Cancel Ticket Page</h3>
+    Enter Booking Ref / PNR: <input type="text" id="refInput" placeholder="e.g. FL-9021">
+    <button onclick="viewStatus()">View Status</button>
+    <button onclick="cancelFlightTicket()">Cancel Ticket</button>
+    <p>Status Output: <b id="statusOutput" style="color:blue;">Enter Booking Reference above</b></p>
+  </div>
+
+  <!-- 6. Customer Feedback -->
+  <div class="box">
+    <h3>6. Customer Feedback & Review</h3>
+    Airline:
+    <select id="feedAirline">
+      <option>Air India</option>
+      <option>IndiGo</option>
+    </select>
+    Rating:
+    <select id="feedRating">
+      <option>5 Stars - Excellent</option>
+      <option>4 Stars - Good</option>
+      <option>3 Stars - Average</option>
+    </select><br>
+    Feedback: <input type="text" id="feedText" placeholder="Great flight experience, punctual service..." style="width:60%;">
+    <button onclick="postFeedback()">Submit Feedback</button>
+    <p id="feedbackList">⭐ <b>Air India (5 Stars):</b> "Smooth check-in and friendly cabin crew."</p>
+  </div>
+
+  <!-- ================= ADMINISTRATOR SECTION ================= -->
+  <h2>--- Administrator Section ---</h2>
+
+  <!-- 1. Administrator User Login Page -->
+  <div class="box">
+    <h3>1. Administrator Login</h3>
+    Admin Username: <input type="text" value="admin_airline">
+    Password: <input type="password" value="airadmin123">
+    <button onclick="alert('Administrator Authenticated Successfully!')">Login</button>
+  </div>
+
+  <!-- 2. Manage Flight Schedules & Seat Inventory -->
+  <div class="box">
+    <h3>2. Manage Flight Schedules & Seat Inventory</h3>
+    Flight No: <input type="text" id="admFNo" placeholder="SG-102">
+    Airline: <input type="text" id="admAirline" placeholder="SpiceJet">
+    Route: <input type="text" id="admRoute" placeholder="Chennai to Mumbai">
+    Time: <input type="text" id="admTime" placeholder="02:30 PM">
+    Fare (Rs.): <input type="number" id="admFare" value="3900" style="width:70px;">
+    Seats: <input type="number" id="admSeats" value="30" style="width:60px;">
+    <button onclick="addFlightAdmin()">Add Flight Schedule</button>
+
+    <h4>Flight Inventory List:</h4>
+    <table id="adminFlightTable">
+      <tr><th>Flight No</th><th>Airline</th><th>Route</th><th>Departure</th><th>Fare</th><th>Seats</th><th>Action</th></tr>
+      <tr>
+        <td>AI-542</td><td>Air India</td><td>MAA → DEL</td><td>06:30 AM</td><td>Rs. 4,800</td><td>18</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      </tr>
+      <tr>
+        <td>6E-204</td><td>IndiGo</td><td>MAA → DEL</td><td>11:15 AM</td><td>Rs. 4,200</td><td>24</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3. Admin Report -->
+  <div class="box">
+    <h3>3. Admin Report (Booking & Revenue Statistics)</h3>
+    <button onclick="document.getElementById('adminReportBox').style.display='block'; alert('Airline Operations Report Generated!');">Generate Admin Report</button>
+    <div id="adminReportBox" style="display:none; margin-top:10px; background:#f4f4f4; padding:10px;">
+      <h4>Consolidated Flight Operations Report</h4>
+      <p>• Total Flights Operating: <b>14 Flights</b></p>
+      <p>• Total Tickets Issued: <b>38 Bookings</b></p>
+      <p>• Total Daily Revenue: <b>Rs. 1,74,200</b></p>
+      <p>• Average Flight Occupancy: <b>87%</b></p>
+      <button onclick="window.print()">Print Report</button>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let currentFare = 4800;
+    let flightBookings = {
+      "FL-9021": { name: "Priya Ramesh", flight: "AI-542 Air India", seat: "12A (Window)", fare: 4800, status: "CONFIRMED" }
+    };
+
+    function searchFlights() {
+      let from = document.getElementById('fFrom').value;
+      let to = document.getElementById('fTo').value;
+      if (from === to) return alert('Origin and Destination cannot be the same!');
+      alert(`Displaying available flights from ${from} to ${to}.`);
+    }
+
+    function selectFlight(name, fare) {
+      document.getElementById('lblFlight').innerText = name;
+      document.getElementById('lblFare').innerText = "Rs. " + fare;
+      currentFare = fare;
+      alert(`Selected: ${name}. Please enter passenger details and proceed to payment.`);
+    }
+
+    function bookFlightTicket() {
+      let name = document.getElementById('paxName').value;
+      let flight = document.getElementById('lblFlight').innerText;
+      let seat = document.getElementById('paxSeat').value;
+      let date = document.getElementById('fDate').value;
+      if (!name) return alert('Please enter passenger name!');
+
+      let ref = "FL-" + Math.floor(1000 + Math.random() * 9000);
+      flightBookings[ref] = { name: name, flight: flight, seat: seat, fare: currentFare, status: "CONFIRMED" };
+
+      let row = document.getElementById('myTicketsTable').insertRow();
+      row.innerHTML = `<td>${ref}</td><td>${name}</td><td>${flight}</td><td>${seat}</td><td>${date}</td><td>Rs. ${currentFare}</td><td><b style="color:green;">CONFIRMED</b></td><td><button onclick="window.print()">Print Ticket</button></td>`;
+
+      alert(`Payment Successful via Gateway!\ne-Ticket Issued!\nBooking Reference / PNR: ${ref}\nConfirmation email dispatched.`);
+    }
+
+    function viewStatus() {
+      let ref = document.getElementById('refInput').value.trim();
+      if (!ref || !flightBookings[ref]) return alert('Booking Reference Not Found!');
+      let b = flightBookings[ref];
+      document.getElementById('statusOutput').innerText = `${b.name} | ${b.flight} | Seat: ${b.seat} | Status: ${b.status}`;
+    }
+
+    function cancelFlightTicket() {
+      let ref = document.getElementById('refInput').value.trim();
+      if (!ref || !flightBookings[ref]) return alert('Invalid Booking Reference!');
+      if (confirm(`Are you sure you want to cancel booking ${ref}?`)) {
+        flightBookings[ref].status = "CANCELLED";
+        document.getElementById('statusOutput').innerText = `${ref} has been CANCELLED. Refund of Rs. ${flightBookings[ref].fare * 0.8} initiated.`;
+        alert(`Ticket ${ref} cancelled successfully! 80% refundable amount processed.`);
+      }
+    }
+
+    function postFeedback() {
+      let airline = document.getElementById('feedAirline').value;
+      let rating = document.getElementById('feedRating').value;
+      let text = document.getElementById('feedText').value;
+      if (!text) return alert('Enter feedback comments!');
+      document.getElementById('feedbackList').innerHTML += `<br>⭐ <b>${airline} (${rating}):</b> "${text}"`;
+      alert('Feedback submitted successfully!');
+      document.getElementById('feedText').value = '';
+    }
+
+    function addFlightAdmin() {
+      let no = document.getElementById('admFNo').value;
+      let air = document.getElementById('admAirline').value;
+      let route = document.getElementById('admRoute').value;
+      let time = document.getElementById('admTime').value;
+      let fare = document.getElementById('admFare').value;
+      let seats = document.getElementById('admSeats').value;
+      if (!no || !air) return alert('Enter flight number and airline');
+
+      let row = document.getElementById('adminFlightTable').insertRow();
+      row.innerHTML = `<td>${no}</td><td>${air}</td><td>${route}</td><td>${time}</td><td>Rs. ${fare}</td><td>${seats}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+      alert('Flight schedule added to inventory!');
+    }
+  </script>
+
+</body>
+</html>
