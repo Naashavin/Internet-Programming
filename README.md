@@ -24,5 +24,9 @@ This repository contains clean, self-contained, university-level solutions for t
 - **Passenger / User Portal**: Login, registration & forgot password utilities, search flight page by destination, date & class, seat selection and booking, payment gateway, my e-ticket page with print option, view booking status by reference, ticket cancellation, and customer feedback.
 - **Administrator Portal**: Admin login, flight schedules & seat inventory management, and operational reporting (bookings and revenue analytics).
 
+### 6. [ExpNO_6.html](ExpNO_6.html) — Online Cake Ordering System
+- **Student / User Portal**: Register and login, search cake, filter by category (*Birthday, Wedding, Anniversary*), sub-category/flavor (*Chocolate, Red Velvet, Vanilla*) and price range, view cake list and descriptions, add to cart, customized order placement (size & personalized message on cake), manage shipping address, and track order shipping status.
+- **Administrator Portal**: Admin login and logout, product inventory management (post cake details, flavor, price, description, and photo/icon), manage orders, update order status (*Baking, Quality Checked, Out for Delivery, Delivered*), and assign shipping location.
+
 ---
 *Created for University Internet Programming Lab.*

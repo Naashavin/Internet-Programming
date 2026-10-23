@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exp 6: Online Cake Ordering System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px 10px; }
+    th { background-color: #eee; }
+    input, select, textarea, button { margin: 4px; padding: 5px; }
+    .box { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment 6: Online Cake Ordering System</h1>
+  <hr>
+
+  <!-- ================= STUDENT / USER SECTION ================= -->
+  <h2>--- Student / User Section ---</h2>
+
+  <!-- 1. Register & Login -->
+  <div class="box">
+    <h3>1. User Registration & Login</h3>
+    <form onsubmit="event.preventDefault(); alert('User Login Successful!');">
+      Username / Email: <input type="text" value="student_cake" required>
+      Password: <input type="password" value="12345" required>
+      <button type="submit">Login</button>
+      <button type="button" onclick="alert('Registration Successful! Account created.')">Register</button>
+    </form>
+  </div>
+
+  <!-- 2. Search & Filter Cakes -->
+  <div class="box">
+    <h3>2. Search Cake & Filter (Category, Sub Category, Price Range)</h3>
+    Search Cake: <input type="text" id="findCake" onkeyup="filterCakes()" placeholder="Search cake name...">
+    Category:
+    <select id="fltCat" onchange="filterCakes()">
+      <option value="All">All Categories</option>
+      <option value="Birthday">Birthday</option>
+      <option value="Wedding">Wedding</option>
+      <option value="Anniversary">Anniversary</option>
+    </select>
+    Sub Category / Flavor:
+    <select id="fltSub" onchange="filterCakes()">
+      <option value="All">All Flavors</option>
+      <option value="Chocolate">Chocolate</option>
+      <option value="Red Velvet">Red Velvet</option>
+      <option value="Vanilla">Vanilla</option>
+    </select>
+    Price Range:
+    <select id="fltPrice" onchange="filterCakes()">
+      <option value="All">All Prices</option>
+      <option value="500">Under Rs. 500</option>
+      <option value="1000">Under Rs. 1000</option>
+    </select>
+    <button onclick="filterCakes()">Apply Filter</button>
+  </div>
+
+  <!-- 3. View Cake List & Description -->
+  <div class="box">
+    <h3>3. View Cake List & Descriptions</h3>
+    <table id="cakeTable">
+      <tr><th>Photo</th><th>Cake Name</th><th>Category</th><th>Sub Category</th><th>Price</th><th>Description</th><th>Action</th></tr>
+      <tr>
+        <td>🎂</td>
+        <td>Dark Chocolate Truffle</td>
+        <td>Birthday</td>
+        <td>Chocolate</td>
+        <td>Rs. 450</td>
+        <td>Rich Belgian dark chocolate cream with cocoa sponge.</td>
+        <td><button onclick="addToCart('Dark Chocolate Truffle', 450)">Add to Cart</button></td>
+      </tr>
+      <tr>
+        <td>🍰</td>
+        <td>Royal Red Velvet</td>
+        <td>Anniversary</td>
+        <td>Red Velvet</td>
+        <td>Rs. 650</td>
+        <td>Velvety red sponge with cream cheese frosting.</td>
+        <td><button onclick="addToCart('Royal Red Velvet', 650)">Add to Cart</button></td>
+      </tr>
+      <tr>
+        <td>🎂</td>
+        <td>Classic Vanilla Berry</td>
+        <td>Wedding</td>
+        <td>Vanilla</td>
+        <td>Rs. 850</td>
+        <td>Fresh vanilla bean sponge layered with wild berries.</td>
+        <td><button onclick="addToCart('Classic Vanilla Berry', 850)">Add to Cart</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 4. Add to Cart & Place Order -->
+  <div class="box">
+    <h3>4. Shopping Cart & Place Order</h3>
+    Selected Cake: <b id="cartCake">Dark Chocolate Truffle</b> | Base Price: <b id="cartPrice">Rs. 450</b><br>
+    Cake Size:
+    <select id="cakeSize" onchange="updatePrice()">
+      <option value="1">0.5 Kg (1x Price)</option>
+      <option value="2">1.0 Kg (2x Price)</option>
+      <option value="3">2.0 Kg (3x Price)</option>
+    </select>
+    Custom Message on Cake: <input type="text" id="cakeMsg" value="Happy Birthday Alex!"><br>
+    Total Payable: <b id="totalPay" style="color:green;">Rs. 450</b>
+    <button onclick="placeOrder()">Place Order & Pay via Gateway</button>
+  </div>
+
+  <!-- 5. Shipping Address Management -->
+  <div class="box">
+    <h3>5. Add / Update Shipping Address</h3>
+    Shipping Address: <input type="text" id="shipAddr" value="Plot 14, 2nd Cross Street, Gandhi Nagar, Chennai" style="width:60%;">
+    <button onclick="alert('Shipping Address Updated Successfully!')">Update Shipping Address</button>
+  </div>
+
+  <!-- 6. My Order & View Shipping Status -->
+  <div class="box">
+    <h3>6. My Orders & View Shipping Status</h3>
+    <table id="userOrdersTable">
+      <tr><th>Order ID</th><th>Cake Ordered</th><th>Message</th><th>Address</th><th>Amount</th><th>Shipping Status</th></tr>
+      <tr>
+        <td>ORD-101</td>
+        <td>Dark Chocolate Truffle (0.5 Kg)</td>
+        <td>Happy Birthday Alex!</td>
+        <td>Plot 14, Gandhi Nagar, Chennai</td>
+        <td>Rs. 450</td>
+        <td><b id="userShipStatus" style="color:orange;">Baking in Oven</b></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ================= ADMINISTRATOR SECTION ================= -->
+  <h2>--- Administrator Section ---</h2>
+
+  <!-- 1. Admin Login & Logout -->
+  <div class="box">
+    <h3>1. Admin Login & Logout</h3>
+    Admin User: <input type="text" value="admin_cake">
+    Password: <input type="password" value="cakeadmin">
+    <button onclick="alert('Admin Logged In Successfully!')">Login</button>
+    <button onclick="alert('Admin Logged Out Successfully!')">Logout</button>
+  </div>
+
+  <!-- 2. Manage Products, Post Cake Details, Upload Images -->
+  <div class="box">
+    <h3>2. Manage Products (Post Cake Details & Image)</h3>
+    Cake Name: <input type="text" id="admCName" placeholder="e.g. Pineapple Delight">
+    Category:
+    <select id="admCCat">
+      <option>Birthday</option>
+      <option>Wedding</option>
+      <option>Anniversary</option>
+    </select>
+    Sub Category:
+    <select id="admCSub">
+      <option>Vanilla</option>
+      <option>Chocolate</option>
+      <option>Red Velvet</option>
+    </select>
+    Price (Rs.): <input type="number" id="admCPrice" value="500" style="width:70px;">
+    Photo/Icon: <input type="text" id="admCImg" value="🎂" style="width:40px;"><br>
+    Description: <input type="text" id="admCDesc" placeholder="Fresh fruit layered cream cake..." style="width:60%;"><br>
+    <button onclick="addCakeAdmin()">Post Cake Details</button>
+
+    <h4>Current Products in Store:</h4>
+    <table id="adminProductTable">
+      <tr><th>Photo</th><th>Product</th><th>Category</th><th>Sub Category</th><th>Price</th><th>Action</th></tr>
+      <tr>
+        <td>🎂</td><td>Dark Chocolate Truffle</td><td>Birthday</td><td>Chocolate</td><td>Rs. 450</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      </tr>
+      <tr>
+        <td>🍰</td><td>Royal Red Velvet</td><td>Anniversary</td><td>Red Velvet</td><td>Rs. 650</td>
+        <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3. Manage Orders, Update Order Status & Shipping Location -->
+  <div class="box">
+    <h3>3. Manage Orders, Update Order Status & Shipping Location</h3>
+    Order ID: <input type="text" id="admOrdId" value="ORD-101" style="width:80px;">
+    Shipping Location: <input type="text" id="admShipLoc" value="Central Hub, Chennai Branch">
+    Update Status:
+    <select id="admOrdStatus">
+      <option value="Baking in Oven">Baking in Oven</option>
+      <option value="Quality Checked & Packed">Quality Checked & Packed</option>
+      <option value="Out for Delivery">Out for Delivery</option>
+      <option value="Delivered Successfully">Delivered Successfully</option>
+    </select>
+    <button onclick="updateOrderStatusAdmin()">Update Status & Location</button>
+    <p>Last Updated Status: <b id="admStatusMsg" style="color:blue;">ORD-101 is Baking in Oven at Central Hub</b></p>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let currentCakePrice = 450;
+
+    function filterCakes() {
+      let q = document.getElementById('findCake').value.toLowerCase();
+      let cat = document.getElementById('fltCat').value;
+      let sub = document.getElementById('fltSub').value;
+      let prc = document.getElementById('fltPrice').value;
+
+      let rows = document.querySelectorAll('#cakeTable tr:not(:first-child)');
+      rows.forEach(r => {
+        let name = r.cells[1].innerText.toLowerCase();
+        let rCat = r.cells[2].innerText;
+        let rSub = r.cells[3].innerText;
+        let rPrc = parseInt(r.cells[4].innerText.replace('Rs. ', ''));
+
+        let matchName = name.includes(q);
+        let matchCat = (cat === 'All' || rCat === cat);
+        let matchSub = (sub === 'All' || rSub === sub);
+        let matchPrc = (prc === 'All' || rPrc <= parseInt(prc));
+
+        r.style.display = (matchName && matchCat && matchSub && matchPrc) ? '' : 'none';
+      });
+    }
+
+    function addToCart(name, price) {
+      document.getElementById('cartCake').innerText = name;
+      document.getElementById('cartPrice').innerText = "Rs. " + price;
+      currentCakePrice = price;
+      updatePrice();
+      alert(`"${name}" added to cart! Choose size and custom message below.`);
+    }
+
+    function updatePrice() {
+      let multiplier = parseInt(document.getElementById('cakeSize').value);
+      let total = currentCakePrice * multiplier;
+      document.getElementById('totalPay').innerText = "Rs. " + total;
+    }
+
+    function placeOrder() {
+      let cake = document.getElementById('cartCake').innerText;
+      let sizeText = document.getElementById('cakeSize').selectedOptions[0].text.split(' ')[0];
+      let msg = document.getElementById('cakeMsg').value;
+      let addr = document.getElementById('shipAddr').value;
+      let total = document.getElementById('totalPay').innerText;
+      let newOrdId = "ORD-" + Math.floor(100 + Math.random() * 900);
+
+      let row = document.getElementById('userOrdersTable').insertRow();
+      row.innerHTML = `<td>${newOrdId}</td><td>${cake} (${sizeText} Kg)</td><td>${msg}</td><td>${addr}</td><td>${total}</td><td><b style="color:orange;">Order Placed</b></td>`;
+
+      alert(`Payment Successful via Integrated Gateway!\nOrder ${newOrdId} placed!\nConfirmation email and SMS sent.`);
+    }
+
+    function addCakeAdmin() {
+      let name = document.getElementById('admCName').value;
+      let cat = document.getElementById('admCCat').value;
+      let sub = document.getElementById('admCSub').value;
+      let price = document.getElementById('admCPrice').value;
+      let img = document.getElementById('admCImg').value || "🎂";
+      let desc = document.getElementById('admCDesc').value;
+      if (!name) return alert('Please enter cake name!');
+
+      // Add to user catalog
+      let uRow = document.getElementById('cakeTable').insertRow();
+      uRow.innerHTML = `<td>${img}</td><td>${name}</td><td>${cat}</td><td>${sub}</td><td>Rs. ${price}</td><td>${desc}</td><td><button onclick="addToCart('${name}', ${price})">Add to Cart</button></td>`;
+
+      // Add to admin catalog
+      let aRow = document.getElementById('adminProductTable').insertRow();
+      aRow.innerHTML = `<td>${img}</td><td>${name}</td><td>${cat}</td><td>${sub}</td><td>Rs. ${price}</td><td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>`;
+
+      alert(`New cake "${name}" posted to store inventory!`);
+      document.getElementById('admCName').value = '';
+    }
+
+    function updateOrderStatusAdmin() {
+      let ordId = document.getElementById('admOrdId').value;
+      let loc = document.getElementById('admShipLoc').value;
+      let status = document.getElementById('admOrdStatus').value;
+
+      document.getElementById('admStatusMsg').innerText = `${ordId} updated to "${status}" at location "${loc}".`;
+      let userStatusEl = document.getElementById('userShipStatus');
+      if (userStatusEl) {
+        userStatusEl.innerText = status;
+        userStatusEl.style.color = status.includes('Delivered') ? 'green' : 'orange';
+      }
+      alert(`Status of ${ordId} updated to: ${status}`);
+    }
+  </script>
+
+</body>
+</html>
